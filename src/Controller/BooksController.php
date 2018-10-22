@@ -4,19 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Repository\BookRepository;
+use App\Services\MyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BooksController extends AbstractController
 {
-    /**
-     * @var \App\Repository\BookRepository
-     */
+    private $myService;
     private $bookRepository;
 
-    public function __construct(BookRepository $bookRepository)
+    public function __construct(MyService $myService, BookRepository $bookRepository)
     {
+        $this->myService = $myService;
         $this->bookRepository = $bookRepository;
     }
 
@@ -43,7 +43,7 @@ class BooksController extends AbstractController
         $book = new Book();
         $book->setName('new name ' . time());
 
-        $this->bookRepository->storeEntity($book);
+        $this->myService->store($book);
 
         return $this->redirect($this->generateUrl('books'));
     }
